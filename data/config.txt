@@ -1,0 +1,4 @@
+clients:20
+servers:25
+queries:3
+buffer_size:10
