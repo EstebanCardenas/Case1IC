@@ -8,26 +8,33 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		static 
+		int clients = 0;
+		int servers = 0;
+		int queries = 0;
+		int buffSize = 0;
 		
-		File f = new File (".data/config");
-		
+		File f = new File ("./data/config.txt");
+
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(f));
 		} catch (FileNotFoundException e) {
 			System.out.println("File not found");
 		}
-		
-		String line = "";
+
 		try {
-			while ((line = br.readLine()) != null) {
-				
-			}
+			String line = br.readLine();
+			clients = Integer.parseInt(line.split(":")[1]);
+			line = br.readLine();
+			servers = Integer.parseInt(line.split(":")[1]);
+			line = br.readLine();
+			queries = Integer.parseInt(line.split(":")[1]);
+			line = br.readLine();
+			buffSize = Integer.parseInt(line.split(":")[1]);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 	
 }
