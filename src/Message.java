@@ -1,18 +1,17 @@
 public class Message {
+    private int clientId;
     private int query;
     private int answer;
 
-    public Message(int q, int a) {
+    public Message(int q, int id) {
+        clientId = id;
         query = q;
-        answer = a;
     }
+
+
 
     public int getQuery() {
         return query;
-    }
-
-    public void setQuery(int query) {
-        this.query = query;
     }
 
     public int getAnswer() {
