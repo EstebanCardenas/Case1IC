@@ -10,6 +10,7 @@ public class Buffer {
     }
 
     public void depositMessage(Message msg) throws InterruptedException {
+        //If buffer is full, client waits until there is available space
         while (msgQueue.size() == buffSize) {
             synchronized (this) {
                 Client.yield();
@@ -24,14 +25,16 @@ public class Buffer {
 
     public void retrieveMessage() throws InterruptedException {
         while (nClients > 0) {
+            //Checks until there are messages available and clients are still active
             while (msgQueue.isEmpty()) {
                 synchronized (this) {
                     Server.yield();
                 }
                 if (nClients == 0) break;
             }
-            if (!msgQueue.isEmpty()) {
-                synchronized (this) {
+            //Server wakes up and proceeds to answer a message
+            synchronized (this) {
+                if (!msgQueue.isEmpty()) {
                     Message currentMsg = msgQueue.dequeue();
                     System.out.println("Server received client #" + currentMsg.getClient().getClientId() + "'s query: \"" + currentMsg.getQuery() + "\"");
                     int answer = currentMsg.getQuery() + 1;
