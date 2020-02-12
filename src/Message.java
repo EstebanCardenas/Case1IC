@@ -1,6 +1,5 @@
 public class Message {
     private Client client;
-    private int serverId;
     private int query;
     private int answer;
 
@@ -15,19 +14,7 @@ public class Message {
         return query;
     }
 
-    public int getAnswer() {
-        return answer;
-    }
-
-    public int getServerId() {
-        return serverId;
-    }
-
     public void setAnswer(int answer) {
         this.answer = answer;
-    }
-
-    public void setServerId(int sId) {
-        serverId = sId;
     }
 }

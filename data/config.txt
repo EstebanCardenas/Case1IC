@@ -1,4 +1,4 @@
-clients:20
-servers:25
-queries:3
-buffer_size:10
+clientes=5
+mensajes=2
+servidores=4
+tam_buffer=20

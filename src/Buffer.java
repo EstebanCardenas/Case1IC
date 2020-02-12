@@ -2,44 +2,39 @@ public class Buffer {
     private Integer nClients;
     private int buffSize;
     private Queue<Message> msgQueue;
-    private Message currentMsg;
 
     public Buffer(int bs, int numClients) {
         buffSize = bs;
-        msgQueue = new Queue<>();
         nClients = numClients;
-        currentMsg = null;
+        msgQueue = new Queue<>();
     }
 
-    public synchronized boolean depositMessage(Message msg) {
-        if (buffSize != msgQueue.size()) {
-            if (msg.getClient().getState() == Thread.State.WAITING) msg.getClient().notify();
+    public void depositMessage(Message msg) throws InterruptedException {
+        synchronized (this) {
+            while (msgQueue.size() == buffSize) {
+                Client.yield();
+            }
+            System.out.println("Client #" + msg.getClient().getId() + " sending message: \"" + msg.getQuery() + "\"");
             msgQueue.enqueue(msg);
-            if (currentMsg == null)
-                currentMsg = msg;
-            buffSize++;
-            return true;
+            wait();
         }
-        return false;
     }
 
-    public synchronized Message retrieveMessage() {
-        Message sent = currentMsg;
-        if (currentMsg != null) {
-            currentMsg = msgQueue.dequeue();
-            if (currentMsg != null)
-                currentMsg.getClient().notify();
-            buffSize--;
+    public void retrieveMessage() throws InterruptedException {
+        while (hasClients()) {
+            while (msgQueue.isEmpty()) {
+                Server.yield();
+            }
+            Message currentMsg = msgQueue.dequeue();
+            System.out.println("Server received client #" + currentMsg.getClient().getId() + "'s query: \"" + currentMsg.getQuery() + "\"");
+            int answer = currentMsg.getQuery() + 1;
+            currentMsg.setAnswer(answer);
+            System.out.println("Server answered client #" + currentMsg.getClient().getId() + "'s query: \"" + currentMsg.getQuery() + "\"");
+            System.out.println("    with: \"" + answer + "\"");
+            synchronized (this) {
+                notify();
+            }
         }
-        return sent;
-    }
-
-    public boolean hasMessages(Server sv) {
-        if (!msgQueue.isEmpty()) {
-            if (sv.getState() == Thread.State.WAITING) sv.notify();
-            return true;
-        }
-        return false;
     }
 
     public void dimNumClients() {

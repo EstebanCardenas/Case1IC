@@ -23,29 +23,27 @@ public class Main {
 
 		try {
 			String line = br.readLine();
-			clients = Integer.parseInt(line.split(":")[1]);
+			clients = Integer.parseInt(line.split("=")[1]);
 			line = br.readLine();
-			servers = Integer.parseInt(line.split(":")[1]);
+			queries = Integer.parseInt(line.split("=")[1]);
 			line = br.readLine();
-			queries = Integer.parseInt(line.split(":")[1]);
+			servers = Integer.parseInt(line.split("=")[1]);
 			line = br.readLine();
-			buffSize = Integer.parseInt(line.split(":")[1]);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		try {
+			buffSize = Integer.parseInt(line.split("=")[1]);
 			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
 		//Finished reading config parameters
 		System.out.println("Clients: " + clients);
-		System.out.println("Servers: " + servers);
 		System.out.println("Queries per Client " + queries);
+		System.out.println("Servers: " + servers);
 		System.out.println("Buffer Size: " + buffSize);
 		System.out.println();
+
 		//Buffer creation
-		Buffer buffer = new Buffer(buffSize, clients);
+		final Buffer buffer = new Buffer(buffSize, clients);
 
 		//Server creation
 		Server[] serverList = new Server[servers];
@@ -65,6 +63,23 @@ public class Main {
 			}
 			clientList[i] = new Client(i, tQueue, buffer);
 			clientList[i].start();
+		}
+
+		for (int i = 0; i < servers; i++) {
+			try {
+				serverList[i].join();
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		for (int i = 0; i < clients; i++) {
+			try {
+				clientList[i].join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
