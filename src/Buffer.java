@@ -10,38 +10,47 @@ public class Buffer {
     }
 
     public void depositMessage(Message msg) throws InterruptedException {
-        synchronized (this) {
-            while (msgQueue.size() == buffSize) {
+        while (msgQueue.size() == buffSize) {
+            synchronized (this) {
                 Client.yield();
             }
-            System.out.println("Client #" + msg.getClient().getId() + " sending message: \"" + msg.getQuery() + "\"");
+        }
+        System.out.println("Client #" + msg.getClient().getClientId() + " sending message: \"" + msg.getQuery() + "\"");
+        synchronized (this) {
             msgQueue.enqueue(msg);
             wait();
         }
     }
 
     public void retrieveMessage() throws InterruptedException {
-        while (hasClients()) {
+        while (nClients > 0) {
             while (msgQueue.isEmpty()) {
-                Server.yield();
+                synchronized (this) {
+                    Server.yield();
+                }
+                if (nClients == 0) break;
             }
-            Message currentMsg = msgQueue.dequeue();
-            System.out.println("Server received client #" + currentMsg.getClient().getId() + "'s query: \"" + currentMsg.getQuery() + "\"");
-            int answer = currentMsg.getQuery() + 1;
-            currentMsg.setAnswer(answer);
-            System.out.println("Server answered client #" + currentMsg.getClient().getId() + "'s query: \"" + currentMsg.getQuery() + "\"");
-            System.out.println("    with: \"" + answer + "\"");
-            synchronized (this) {
-                notify();
+            if (!msgQueue.isEmpty()) {
+                synchronized (this) {
+                    Message currentMsg = msgQueue.dequeue();
+                    System.out.println("Server received client #" + currentMsg.getClient().getClientId() + "'s query: \"" + currentMsg.getQuery() + "\"");
+                    int answer = currentMsg.getQuery() + 1;
+                    currentMsg.setAnswer(answer);
+                    System.out.println("Server answered client #" + currentMsg.getClient().getClientId() + "'s query: \"" + currentMsg.getQuery() + "\"");
+                    System.out.println("    with: \"" + answer + "\"");
+                    notify();
+                }
             }
         }
     }
 
     public void dimNumClients() {
-        nClients--;
+        synchronized (this) {
+            nClients--;
+        }
     }
 
-    public boolean hasClients(){
-        return nClients > 0;
+    public int getNumClients() {
+        return nClients;
     }
 }

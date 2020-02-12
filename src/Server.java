@@ -1,4 +1,3 @@
-
 public class Server extends Thread {
 
     public final static String BLUE_BOLD = "\033[1;34m";
@@ -15,13 +14,14 @@ public class Server extends Thread {
     @Override
     public void run() {
         //Attempts to retrieve messages
-        System.out.println(GREEN_BOLD + "Server #" + id + " starting" + Client.RESET);
+        System.out.println(GREEN_BOLD + "SERVER #" + id + " starting" + Client.RESET);
         try {
             buffer.retrieveMessage();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         //Answers messages as long as buffer's queue is not empty
+        System.out.println();
         System.out.println(BLUE_BOLD + "Server #" + id + " has finished" + Client.RESET);
     }
 }

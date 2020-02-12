@@ -15,14 +15,15 @@ public class Client extends Thread {
 
 	@Override
 	public void run() {
-		System.out.println(Server.GREEN_BOLD + "Client #" + id + " starting" + Client.RESET);
+		System.out.println(Server.GREEN_BOLD + "CLIENT #" + id + " starting" + Client.RESET);
 		//Attempts to store messages in buffer
 		while(!queries.isEmpty())
 			sendMessage();
 		//All messages have been sent and an answer was recieved for all of them
 		System.out.println(RED_BOLD + "Client #" + id + " has no remaining queries" + RESET);
-		System.out.println("Client #" + id + " exiting buffer");
+		System.out.println(RED_BOLD + "Client #" + id + " exiting buffer" + RESET);
 		buffer.dimNumClients();
+		System.out.println("CLIENTS REMAINING: " + buffer.getNumClients());
 	}
 
 	public 	void sendMessage() {
@@ -37,4 +38,7 @@ public class Client extends Thread {
 		}
 	}
 
+	public int getClientId() {
+		return id;
+	}
 }
