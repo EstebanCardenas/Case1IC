@@ -1,20 +1,20 @@
 public class Message {
-    private Client client;
-    private int query;
-    private int answer;
+    private final Client client;
+    private final int query;
 
     public Message(int q, Client cli) {
         client = cli;
         query = q;
     }
 
-    public Client getClient() { return client; }
+    public Client getClient() {
+        return client;
+    }
 
     public int getQuery() {
         return query;
     }
 
     public void setAnswer(int answer) {
-        this.answer = answer;
     }
 }

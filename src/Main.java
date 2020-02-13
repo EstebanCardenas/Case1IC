@@ -1,36 +1,37 @@
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Random;
+import java.security.SecureRandom;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String... args) {
 		int clients = 0;
 		int servers = 0;
 		int queries = 0;
 		int buffSize = 0;
 		//Reading configuration parameters
-		File f = new File ("./data/config.txt");
-		BufferedReader br = null;
-		try {
-			br = new BufferedReader(new FileReader(f));
-		} catch (FileNotFoundException e) {
-			System.out.println("File not found");
-		}
+		// File f = new File ("./data/config.txt");
+		// BufferedReader br = null;
+//		try {
+//
+//		} catch (FileNotFoundException e) {
+//			System.out.println("File not found");
+//		}
 
 		try {
-			String line = br.readLine();
+			// br = new BufferedReader(new FileReader(f));
+			BufferedReader bufferedReader = new BufferedReader(new FileReader(new File("./data/config.txt")));
+			String line = bufferedReader.readLine();
 			clients = Integer.parseInt(line.split("=")[1]);
-			line = br.readLine();
+			line = bufferedReader.readLine();
 			queries = Integer.parseInt(line.split("=")[1]);
-			line = br.readLine();
+			line = bufferedReader.readLine();
 			servers = Integer.parseInt(line.split("=")[1]);
-			line = br.readLine();
+			line = bufferedReader.readLine();
 			buffSize = Integer.parseInt(line.split("=")[1]);
-			br.close();
+			bufferedReader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -54,12 +55,14 @@ public class Main {
 
 		//Client creation
 		Client[] clientList = new Client[clients];
-		Random rand = new Random();
+//		Random rand = new Random();
+		SecureRandom secureRandom = new SecureRandom();
 		for (int i = 0; i < clients; i++) {
 			Queue<Integer> tQueue = new Queue<>();
 			for (int j = 0; j < queries; j++) {
-				int rd = rand.nextInt(1000);
-				tQueue.enqueue(rd);
+//				int rd = rand.nextInt(1000);
+//				int randomNumber = secureRandom.nextInt(1000);
+				tQueue.enqueue(secureRandom.nextInt(1000));
 			}
 			clientList[i] = new Client(i, tQueue, buffer);
 			clientList[i].start();
@@ -68,8 +71,7 @@ public class Main {
 		for (int i = 0; i < servers; i++) {
 			try {
 				serverList[i].join();
-			}
-			catch (InterruptedException e) {
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
@@ -82,5 +84,5 @@ public class Main {
 			}
 		}
 	}
-	
+
 }
