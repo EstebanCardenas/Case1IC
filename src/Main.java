@@ -4,24 +4,20 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.security.SecureRandom;
 
-public class Main {
+public final class Main {
+
+	// Empty private constructor to adhear to security standards.
+	private Main() {
+	}
 
 	public static void main(String... args) {
 		int clients = 0;
 		int servers = 0;
 		int queries = 0;
 		int buffSize = 0;
-		//Reading configuration parameters
-		// File f = new File ("./data/config.txt");
-		// BufferedReader br = null;
-//		try {
-//
-//		} catch (FileNotFoundException e) {
-//			System.out.println("File not found");
-//		}
 
+		//Reading configuration parameters
 		try {
-			// br = new BufferedReader(new FileReader(f));
 			BufferedReader bufferedReader = new BufferedReader(new FileReader(new File("./data/config.txt")));
 			String line = bufferedReader.readLine();
 			clients = Integer.parseInt(line.split("=")[1]);
@@ -36,7 +32,7 @@ public class Main {
 			e.printStackTrace();
 		}
 
-		//Finished reading config parameters
+		// Print read results.
 		System.out.println("Clients: " + clients);
 		System.out.println("Queries per Client " + queries);
 		System.out.println("Servers: " + servers);
@@ -55,13 +51,10 @@ public class Main {
 
 		//Client creation
 		Client[] clientList = new Client[clients];
-//		Random rand = new Random();
 		SecureRandom secureRandom = new SecureRandom();
 		for (int i = 0; i < clients; i++) {
 			Queue<Integer> tQueue = new Queue<>();
 			for (int j = 0; j < queries; j++) {
-//				int rd = rand.nextInt(1000);
-//				int randomNumber = secureRandom.nextInt(1000);
 				tQueue.enqueue(secureRandom.nextInt(1000));
 			}
 			clientList[i] = new Client(i, tQueue, buffer);
