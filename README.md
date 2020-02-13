@@ -1,2 +1,2 @@
-# Caso1IC
-Caso 1 InfraComp
+# Case 1
+- Esteban Cárdenas
