@@ -1,3 +1,3 @@
-# Case 1
+# Concurrency Management System
 - Esteban Cárdenas
 - Ryan Bosher
